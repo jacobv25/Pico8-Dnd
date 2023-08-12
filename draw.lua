@@ -18,14 +18,19 @@ end
 function draw_npcs()
     for i = 1, #npcs do
         local npc = npcs[i]
-        spr(npc.spr, npc.x, npc.y)
+        if npc.curr_map == active_map then
+            spr(npc.spr, npc.x, npc.y)
+        end
     end
 end
 
 function draw_doors()
+    -- print size of doors
     for i = 1, #doors do
         local door = doors[i]
-        spr(door.spr, door.x, door.y)
+        if door.mapId == active_map then
+            spr(door.spr, door.x, door.y)
+        end
     end
 end
 
@@ -53,10 +58,14 @@ function draw_dialogue(npc_name)
     rect(border_x, border_y, border_x + border_width, border_y + border_height, 7)
     -- border is white
 
+    -- get the substring to display
+    local display_text = sub(dialogues[npc_name][dialogue_index], 1, char_count)
+
     -- draw the dialogue
-    print(dialogues[npc_name][dialogue_index], border_x + 10, border_y + 10, 7)
+    print(display_text, border_x + 10, border_y + 10, 7)
     -- dialogue text is white
 end
+
 
 function draw_menu()
     -- draw a border around the menu

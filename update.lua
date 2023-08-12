@@ -1,6 +1,5 @@
 function _update()
     if gamestate == "game" then
-        debug[0] = "game state activated!"
         update_player()
 
         -- game logic goes here
@@ -9,7 +8,6 @@ function _update()
             gamestate = "menu"
         end
     elseif gamestate == "menu" then
-        debug[0] = "menu state activated!"
         -- menu navigation
         if btnp(2) then
             menu_index -= 1
@@ -32,7 +30,6 @@ function _update()
             if option_selected == "tALK" then
                 -- check if player is near npc
                 temp_npc = check_if_near_npc()
-                debug[1] = "temp_npc: " .. temp_npc.name
                 if temp_npc then
                     temp_npc_name = temp_npc.name
                     -- if so, start dialogue
@@ -44,11 +41,31 @@ function _update()
             end
         end
     elseif gamestate == "dialogue" then
-        debug[0] = "dialogue state activated!"
         -- dialogue navigation
-        if btnp(5) or btnp(4) then
-            debug[1] = "dialogue_index: " .. dialogue_index
+        update_dialogue()
+    end
+end
+
+
+local char_speed = 10 -- characters printed per second
+local char_count = 1
+local timer = 0
+
+function update_dialogue()
+    -- increment the timer by the frame time (assuming 30 frames per second for PICO-8)
+    timer += 1/30
+
+    -- calculate how many characters should be displayed by now
+    char_count = char_speed * timer
+
+    -- check for 'x' button press to advance dialogue
+    if btnp(5) or btnp(4) then
+        if char_count < #dialogues[temp_npc_name][dialogue_index] then
+            char_count = #dialogues[temp_npc_name][dialogue_index] -- instantly display the whole text
+        else
             dialogue_index += 1
+            char_count = 1
+            timer = 0 -- reset the timer
             if dialogue_index > #dialogues[temp_npc_name] then
                 dialogue_index = 1
                 gamestate = "game" -- end dialogue after the last message
@@ -57,18 +74,6 @@ function _update()
     end
 end
 
-function update_menu()
-    if btnp(2) then
-        -- Up button
-        menu_index = max(1, menu_index - 1)
-    elseif btnp(3) then
-        -- Down button
-        menu_index = min(#menu_items, menu_index + 1)
-    elseif btnp(5) then
-        -- X button
-        menu_items[menu_index].action()
-    end
-end
 
 function update_player()
     local dx, dy = 0, 0
@@ -89,17 +94,28 @@ function update_player()
     end
 
     local door = check_door_collision()
+
     if door then
-        debug[1] = "door collision detected!"
-        debug[2] = "This door is in: " .. door.curr_map
-        debug[3] = "This door leads to: " .. door.lead_to
-        -- curr_map = maps[door.link.map]
-        -- player.x = door.link.x
-        -- player.y = door.link.y + 8 -- 8 pixels below the door
+        dest_door = handle_door_transition(door)
+
+            -- Move player to the new position
+        if dest_door.player_spawn_pos == "left" then
+            player.x = dest_door.x - GRID_SIZE
+        elseif dest_door.player_spawn_pos == "right" then
+            player.x = dest_door.x + GRID_SIZE
+        elseif dest_door.player_spawn_pos == "above" then
+            player.y = dest_door.y - GRID_SIZE
+            player.x = dest_door.x
+        elseif dest_door.player_spawn_pos == "below" then
+            player.y = dest_door.y + GRID_SIZE
+            player.x = dest_door.x
+        end
     else
-        debug[1] = ""
+        -- If there are no collisions, move the player normally
+        player.x = player.x + dx * player.speed
+        player.y = player.y + dy * player.speed
     end
-    -- If there are no collisions, move the player
-    player.x = player.x + dx * player.speed
-    player.y = player.y + dy * player.speed
+
+    -- print player position
+    -- debug[0] = "player.x: " .. player.x .. ", player.y: " .. player.y
 end

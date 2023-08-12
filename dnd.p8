@@ -48,7 +48,7 @@ end
 npcs = {
     create_npc({ name = "rowan", x=50, y=40, spr=24, curr_map=1 }),
     create_npc({ name = "fintan", x=40, y=50, spr=40, curr_map=2}),
-    -- create_npc({ name = "saksham", x=40, y=40, spr=41, curr_map=1})
+    create_npc({ name = "saksham", x=80, y=80, spr=56, curr_map=2})
 }
 
 -- define menu options

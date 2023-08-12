@@ -14,6 +14,10 @@ function check_tile_collision(player, dx, dy)
     local new_x = player.x + dx * player.speed
     local new_y = player.y + dy * player.speed
 
+    -- Get the active map's offset
+    local map_offset_x = maps[active_map].cell_x * 8 -- assuming each cell is equivalent to a 8x8 tile
+    local map_offset_y = maps[active_map].cell_y * 8
+
     -- Calculate the coordinates of the four corners of the player sprite
     local corners = {
         { x = new_x + player.left, y = new_y + player.top }, -- top-left
@@ -24,17 +28,16 @@ function check_tile_collision(player, dx, dy)
 
     -- Check each corner for a collision
     for i, corner in ipairs(corners) do
-        local tile_x = flr(corner.x / 8) -- assuming each tile is 8x8 pixels
-        local tile_y = flr(corner.y / 8)
+        local tile_x = flr((corner.x + map_offset_x) / 8) -- Adjusted to account for map offset
+        local tile_y = flr((corner.y + map_offset_y) / 8) -- Adjusted to account for map offset
         local tile_number = mget(tile_x, tile_y)
-
-        for j, non_walkable_tile in ipairs(non_walkable) do
+        debug[9] = "Tile number: "..tile_number
+        for j, non_walkable_tile in ipairs(maps[active_map].non_walkable) do
             if tile_number == non_walkable_tile then
                 return true
             end
         end
     end
-
     -- No collisions were found
     return false
 end

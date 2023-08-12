@@ -47,16 +47,30 @@ function _update()
 end
 
 
-local char_speed = 10 -- characters printed per second
+local char_speed = 20 -- characters printed per second
 local char_count = 1
 local timer = 0
+local playing_sfx = false -- a flag to check if we've started the SFX for the current dialogue
 
 function update_dialogue()
     -- increment the timer by the frame time (assuming 30 frames per second for PICO-8)
     timer += 1/30
 
     -- calculate how many characters should be displayed by now
-    char_count = char_speed * timer
+    char_count = flr(char_speed * timer)
+
+    -- If characters are still being typed and SFX isn't playing, play the SFX
+    if char_count < #dialogues[temp_npc_name][dialogue_index] and not playing_sfx then
+        sfx(0) 
+        playing_sfx = true
+    end
+
+    -- If characters are done typing, stop the SFX and reset the flag
+    if char_count >= #dialogues[temp_npc_name][dialogue_index] and playing_sfx then
+        -- Assuming sfx -1 stops all sound effects
+        sfx(-1) 
+        playing_sfx = false
+    end
 
     -- check for 'x' button press to advance dialogue
     if btnp(5) or btnp(4) then
@@ -66,6 +80,7 @@ function update_dialogue()
             dialogue_index += 1
             char_count = 1
             timer = 0 -- reset the timer
+            playing_sfx = false -- reset the SFX flag
             if dialogue_index > #dialogues[temp_npc_name] then
                 dialogue_index = 1
                 gamestate = "game" -- end dialogue after the last message
@@ -73,6 +88,8 @@ function update_dialogue()
         end
     end
 end
+
+
 
 
 function update_player()

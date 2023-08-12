@@ -1,6 +1,6 @@
 function check_if_near_npc()
     for i, npc in ipairs(npcs) do
-        if check_collision(player, npc) then
+        if active_map == npc.curr_map and check_collision(player, npc) then
             -- A collision has been detected, return the NPC
             return npc
         end
@@ -74,11 +74,54 @@ end
 
 function check_door_collision()
     for i, door in ipairs(doors) do
-        if check_collision(player, door) then
-            -- A collision has been detected, return the door
+        if door.mapId == active_map and check_collision(player, door) then
+            -- A collision has been detected with a door on the active map, return the door
             return door
         end
     end
     -- No collisions were detected, return nil
     return nil
+end
+
+
+function handle_door_transition(door)
+    -- Find the destination door
+    local dest_door = nil
+    for i = 1, #doors do
+        if doors[i].id == door.destination_door_id then
+            dest_door = doors[i]
+            break
+        end
+    end
+
+    if not dest_door then
+        -- Handle the case where there's no destination door found
+        debug[2] = "No destination door found"
+        return
+    end
+
+    -- Load the new map
+    -- Assuming you have some kind of load_map() function:
+    load_map(dest_door.mapId)
+
+    return dest_door
+end
+
+function load_map(mapId)
+    local map_data = nil
+    for i = 1, #maps do
+        if maps[i].id == mapId then
+            map_data = maps[i]
+            break
+        end
+    end
+    
+    if map_data then
+        current_room_x = map_data.cell_x
+        current_room_y = map_data.cell_y
+        active_map = mapId
+    else
+        -- Handle the case where the map ID is invalid
+        debug[3] = "Invalid map ID: "..mapId
+    end
 end

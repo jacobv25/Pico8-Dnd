@@ -1,16 +1,18 @@
 -- First, create both doors
 base_door = {
+    id = 0,
     spr = 88,
-    x = 64,
-    y = 64,
-    top = 0,
+    x = 64,       -- Door's x position
+    y = 64,       -- Door's y position
+    top = 0,      -- Collision boundaries
     bot = 7,
     left = 0,
     right = 7,
-    curr_map = "BAD_VALUE",
-    lead_to = "BAD_VALUE",
-    spawn_player = "BAD_VALUE"
+    mapId = 0,  -- Current map's name or id
+    destination_door_id = nil,     -- ID of the door where player will spawn
+    player_spawn_pos = "above",  -- Where the player will spawn on map
 }
+
 function create_door(overrides)
     -- Create a new table by copying the base_door values
     local door = {}
@@ -28,19 +30,19 @@ end
 
 doors = {
     create_door({
-        spr = 88,
+        id = 1,
         x = 64,
         y = 64,
-        curr_map = "rowans_house",
-        lead_to = "outside_rowans_house",
-        spawn_player = "above"
+        mapId = 1,
+        destination_door_id = 2
     }),
-    -- create_door({
-    --     x = 64,
-    --     y = 64,
-    --     curr_map = "cavea lieter",
-    --     lead_to = "inside_rowans_house",
-    --     spawn_player = "below"
-    -- })
+    create_door({
+        id = 2,
+        x = 80,
+        y = 40,
+        mapId = 2,
+        destination_door_id = 1,
+        player_spawn_pos = "below"
+    })
 }
 

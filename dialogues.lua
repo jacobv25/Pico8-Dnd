@@ -79,5 +79,18 @@ dialogues = {
         "I'm glad you're\n" ..
         "staying to help.\n" ..
         "Thank you!",
+    },
+    ["robie"] = {
+        "wHy hElLo tHeRe!",
+
+        "I aM rObIe, tHe\n" ..
+        "elevator gUy.\n",
+
+        "Becareful in the\n" ..
+        "dwarf ruins.\n",
+
+        "It's very dark.\n" ..
+        "and there are\n" ..
+        "many bats!",
     }
 }

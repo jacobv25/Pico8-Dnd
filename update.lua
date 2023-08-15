@@ -33,10 +33,12 @@ function _update()
                 if temp_npc then
                     temp_npc_name = temp_npc.name
                     -- if so, start dialogue
+                    stop_music()
                     gamestate = "dialogue"
                     dialogue_index = 1
                 end
             else
+                play_music_for_map(active_map)
                 gamestate = "game"
             end
         end
@@ -61,7 +63,7 @@ function update_dialogue()
 
     -- If characters are still being typed and SFX isn't playing, play the SFX
     if char_count < #dialogues[temp_npc_name][dialogue_index] and not playing_sfx then
-        sfx(0) 
+        sfx(40) 
         playing_sfx = true
     end
 
@@ -83,14 +85,12 @@ function update_dialogue()
             playing_sfx = false -- reset the SFX flag
             if dialogue_index > #dialogues[temp_npc_name] then
                 dialogue_index = 1
+                play_music_for_map(active_map)
                 gamestate = "game" -- end dialogue after the last message
             end
         end
     end
 end
-
-
-
 
 function update_player()
     local dx, dy = 0, 0

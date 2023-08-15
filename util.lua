@@ -1,3 +1,40 @@
+function stop_music()
+    music(-1)
+    current_music = nil
+    -- No music is playing now
+end
+
+
+-- Helper function to check if a value is in a list
+function in_list(val, list)
+    for _, v in pairs(list) do
+        if v == val then
+            return true
+        end
+    end
+    return false
+end
+
+current_music = nil -- This will store the current music range (start and stop) if any is playing
+
+function play_music_for_map(map)
+    for group, data in pairs(map_music) do
+        if in_list(map, data.maps) then
+            -- If the same music is already playing, decide whether to restart based on "force_restart_on"
+            if current_music == group and (not data.force_restart_on or not in_list(map, data.force_restart_on)) then
+                return -- Music is already playing and doesn't need to restart
+            end
+
+            music(data.start, data.stop, 7)
+            current_music = group -- Store the music group as the currently playing music
+            return
+        end
+    end
+
+    -- If we've reached here, no music mapping was found for the map, so stop any playing music
+    stop_music()
+end
+
 function check_if_near_npc()
     for i, npc in ipairs(npcs) do
         if active_map == npc.curr_map and check_collision(player, npc) then
@@ -15,7 +52,8 @@ function check_tile_collision(player, dx, dy)
     local new_y = player.y + dy * player.speed
 
     -- Get the active map's offset
-    local map_offset_x = maps[active_map].cell_x * 8 -- assuming each cell is equivalent to a 8x8 tile
+    local map_offset_x = maps[active_map].cell_x * 8
+    -- assuming each cell is equivalent to a 8x8 tile
     local map_offset_y = maps[active_map].cell_y * 8
 
     -- Calculate the coordinates of the four corners of the player sprite
@@ -31,7 +69,7 @@ function check_tile_collision(player, dx, dy)
         local tile_x = flr((corner.x + map_offset_x) / 8) -- Adjusted to account for map offset
         local tile_y = flr((corner.y + map_offset_y) / 8) -- Adjusted to account for map offset
         local tile_number = mget(tile_x, tile_y)
-        debug[9] = "Tile number: "..tile_number
+        debug[9] = "Tile number: " .. tile_number
         for j, non_walkable_tile in ipairs(maps[active_map].non_walkable) do
             if tile_number == non_walkable_tile then
                 return true
@@ -86,7 +124,6 @@ function check_door_collision()
     return nil
 end
 
-
 function handle_door_transition(door)
     -- Find the destination door
     local dest_door = nil
@@ -118,13 +155,15 @@ function load_map(mapId)
             break
         end
     end
-    
+
     if map_data then
         current_room_x = map_data.cell_x
         current_room_y = map_data.cell_y
         active_map = mapId
+        -- This might be somewhere in your game logic, e.g., when player moves to a new area
+        play_music_for_map(active_map)
     else
         -- Handle the case where the map ID is invalid
-        debug[3] = "Invalid map ID: "..mapId
+        debug[3] = "Invalid map ID: " .. mapId
     end
 end

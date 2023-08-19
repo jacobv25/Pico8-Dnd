@@ -14,8 +14,17 @@ player = {
     bot = 7,
     left = 2,
     right = 5,
-    speed = 1
-}
+    speed = 1,
+    animations = {
+        idle = {frames={128,129,130,131}, speed=15},
+        walk_right = {frames={132,133,134,135}, speed=5},
+        walk_left = {frames={136,137,138,139}, speed=5},
+        walk_up = {frames={140,141,142,143}, speed=5},
+        walk_down = {frames={144,145,146,147}, speed=5}
+    },
+    current_anim = "idle",
+    current_frame = 1,
+    timer = 0}
 
 base_npc = {
     name = "default",

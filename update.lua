@@ -2,7 +2,7 @@ function _update()
     debug[0] = "active map: " .. active_map
     if gamestate == "game" then
         update_player()
-
+        update_animation(player)
         -- game logic goes here
         -- check for 'x' button press to open menu
         if btnp(5) then
@@ -46,6 +46,18 @@ function _update()
     elseif gamestate == "dialogue" then
         -- dialogue navigation
         update_dialogue()
+    end
+end
+
+-- update the animation state
+function update_animation(anim_obj)
+    anim_obj.timer += 1
+    if anim_obj.timer >= anim_obj.animations[anim_obj.current_anim].speed then
+        anim_obj.timer = 0
+        anim_obj.current_frame += 1
+        if anim_obj.current_frame > #anim_obj.animations[anim_obj.current_anim].frames then
+            anim_obj.current_frame = 1
+        end
     end
 end
 
@@ -95,15 +107,21 @@ end
 function update_player()
     local dx, dy = 0, 0
 
-    -- Calculate the direction of movement based on input
-    if btn(0) then dx = -1 end
-    -- left
-    if btn(1) then dx = 1 end
-    -- right
-    if btn(2) then dy = -1 end
-    -- up
-    if btn(3) then dy = 1 end
-    -- down
+    if btn(0) then 
+        dx = -player.speed
+        player.current_anim = "walk_left"
+    elseif btn(1) then 
+        dx = player.speed
+        player.current_anim = "walk_right"
+    elseif btn(2) then 
+        dy = -player.speed
+        player.current_anim = "walk_up"
+    elseif btn(3) then 
+        dy = player.speed
+        player.current_anim = "walk_down"
+    else
+        player.current_anim = "idle"
+    end
 
     if active_map == PROC_GEN_MAP_ID then
         if check_tile_collision_for_proc_gen_map(player, dx, dy) then

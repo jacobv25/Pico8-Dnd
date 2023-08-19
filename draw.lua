@@ -3,11 +3,13 @@ function _draw()
     if active_map == PROC_GEN_MAP_ID then
         draw_proc_gen_map(heightmap)
         -- draw_doors()
-        spr(player.spr, 64, 64)
+        local frame = player.animations[player.current_anim].frames[player.current_frame]
+        spr(frame, 64, 64)
     else
         draw_map()
         draw_doors()
-        draw_player()
+        -- draw_player()
+        draw_animation(player)
         draw_npcs()
     end
     draw_debug()
@@ -19,6 +21,12 @@ function _draw()
         -- draw the dialogue
         draw_dialogue(temp_npc_name)
     end
+end
+
+-- draw the current frame
+function draw_animation(anim_obj)
+    local frame = anim_obj.animations[anim_obj.current_anim].frames[anim_obj.current_frame]
+    spr(frame, anim_obj.x, anim_obj.y)
 end
 
 function draw_npcs()

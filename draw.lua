@@ -1,9 +1,15 @@
 function _draw()
     cls()
-    draw_map()
-    draw_player()
-    draw_npcs()
-    draw_doors()
+    if active_map == PROC_GEN_MAP_ID then
+        draw_proc_gen_map(heightmap)
+        -- draw_doors()
+        spr(player.spr, 64, 64)
+    else
+        draw_map()
+        draw_doors()
+        draw_player()
+        draw_npcs()
+    end
     draw_debug()
     if gamestate == "menu" then
         draw_menu()
@@ -39,8 +45,34 @@ function draw_player()
     spr(player.spr, player.x, player.y)
 end
 
+
 function draw_map()
     map(current_room_x, current_room_y)
+end
+
+function draw_proc_gen_map(heightmap)
+    local screen_center_x = 64
+    local screen_center_y = 64
+
+    local offset_x = screen_center_x - player.x
+    local offset_y = screen_center_y - player.y
+
+    for y=1, proc_gen_map_height do
+        for x=1, proc_gen_map_width do
+            local value = heightmap[x][y]
+
+            local tile_id
+            if value <= 2 then
+                tile_id = WATER_SPRITE  -- water sprite
+            elseif value < 6 then
+                tile_id = LAND_SPRITE  -- land sprite
+            else
+                tile_id = MOUNTAIN_SPRITE  -- mountain sprite
+            end
+
+            spr(tile_id, (x * 8 - 8) + offset_x, (y * 8 - 8) + offset_y)
+        end
+    end
 end
 
 function draw_dialogue(npc_name)

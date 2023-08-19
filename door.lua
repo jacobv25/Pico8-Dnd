@@ -58,6 +58,22 @@ doors = {
         y = 112,
         mapId = 3,
         destination_door_id = 1,
+    }),
+    create_door({ -- Basement to Dungeon
+        id = 5,
+        x = 64,
+        y = 64,
+        mapId = 3,
+        destination_door_id = 6,
+        player_spawn_pos = "below"
+    }), 
+    create_door({ -- Dungeon to Basement
+        id = 6,
+        x = 64, -- PROC GEN DOOR
+        y = 64, -- PROC GEN DOOR
+        mapId = 100,
+        destination_door_id = 5,
+        player_spawn_pos = "above"
     })
 }
 

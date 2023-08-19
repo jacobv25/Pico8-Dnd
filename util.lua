@@ -46,6 +46,36 @@ function check_if_near_npc()
     return nil
 end
 
+function check_tile_collision_for_proc_gen_map(player, dx, dy)
+    local new_x = player.x + dx * player.speed
+    local new_y = player.y + dy * player.speed
+
+    local corners = {
+        { x = new_x + player.left, y = new_y + player.top }, 
+        { x = new_x + player.right, y = new_y + player.top }, 
+        { x = new_x + player.left, y = new_y + player.bot }, 
+        { x = new_x + player.right, y = new_y + player.bot }
+    }
+
+    for i, corner in ipairs(corners) do
+        local tile_x = flr(corner.x / 8) + 1
+        local tile_y = flr(corner.y / 8) + 1
+        
+        if tile_x < 1 or tile_x > #proc_gen_world_map[1] or tile_y < 1 or tile_y > #proc_gen_world_map then
+            return true
+        end
+
+        local tile_number = proc_gen_world_map[tile_y][tile_x]
+
+        for _, non_walkable_tile in ipairs(proc_gen_non_walkable) do
+            if tile_number == non_walkable_tile then
+                return true
+            end
+        end
+    end
+    return false
+end
+
 function check_tile_collision(player, dx, dy)
     -- Calculate the player's new position
     local new_x = player.x + dx * player.speed
@@ -128,6 +158,7 @@ function handle_door_transition(door)
     -- Find the destination door
     local dest_door = nil
     for i = 1, #doors do
+        debug[3] = "dest door id = "..door.destination_door_id
         if doors[i].id == door.destination_door_id then
             dest_door = doors[i]
             break
@@ -148,22 +179,33 @@ function handle_door_transition(door)
 end
 
 function load_map(mapId)
-    local map_data = nil
-    for i = 1, #maps do
-        if maps[i].id == mapId then
-            map_data = maps[i]
-            break
-        end
-    end
+    if mapId == PROC_GEN_MAP_ID then
+        -- Reset player position if needed, or set to a starting position
+        player.x, player.y = 64, 64  -- example: start in the middle of the procedural map
 
-    if map_data then
-        current_room_x = map_data.cell_x
-        current_room_y = map_data.cell_y
-        active_map = mapId
-        -- This might be somewhere in your game logic, e.g., when player moves to a new area
-        play_music_for_map(active_map)
+        current_room_x = 0
+        current_room_y = 16
+        active_map = PROC_GEN_MAP_ID
+        play_music_for_map(active_map)  -- if you have specific music for the procedural map
+
     else
-        -- Handle the case where the map ID is invalid
-        debug[3] = "Invalid map ID: " .. mapId
+        -- The existing logic for your hand-drawn maps
+        local map_data = nil
+        for i = 1, #maps do
+            if maps[i].id == mapId then
+                map_data = maps[i]
+                break
+            end
+        end
+
+        if map_data then
+            current_room_x = map_data.cell_x
+            current_room_y = map_data.cell_y
+            active_map = mapId
+            play_music_for_map(active_map)
+        else
+            -- Handle the case where the map ID is invalid
+            debug[3] = "Invalid map ID: " .. mapId
+        end
     end
 end

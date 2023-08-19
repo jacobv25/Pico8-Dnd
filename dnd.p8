@@ -107,7 +107,8 @@ MOUNTAIN_SPRITE = 116
 proc_gen_map_width = 64
 proc_gen_map_height = 64
 proc_gen_world_map = {}
-proc_gen_non_walkable = {114,116}
+-- proc_gen_non_walkable = {114,116}
+proc_gen_non_walkable = {}
 
 
 gamestate = "game" -- Start the game in the game state

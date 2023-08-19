@@ -125,17 +125,24 @@ function update_player()
         if door then
             dest_door = handle_door_transition(door)
             if dest_door then
+                -- handle door transition to proc gen map
+                if dest_door.id == 6 then
+                    -- assume we always want to draw the player right of the door
+                    player.y = dest_door.y*8 - GRID_SIZE
+                    player.x = dest_door.x*8
+                else -- handle normal transition
                     -- Move player to the new position
-                if dest_door.player_spawn_pos == "left" then
-                    player.x = dest_door.x - GRID_SIZE
-                elseif dest_door.player_spawn_pos == "right" then
-                    player.x = dest_door.x + GRID_SIZE
-                elseif dest_door.player_spawn_pos == "above" then
-                    player.y = dest_door.y - GRID_SIZE
-                    player.x = dest_door.x
-                elseif dest_door.player_spawn_pos == "below" then
-                player.y = dest_door.y + GRID_SIZE
-                player.x = dest_door.x
+                    if dest_door.player_spawn_pos == "left" then
+                        player.x = dest_door.x - GRID_SIZE
+                    elseif dest_door.player_spawn_pos == "right" then
+                        player.x = dest_door.x + GRID_SIZE
+                    elseif dest_door.player_spawn_pos == "above" then
+                        player.y = dest_door.y - GRID_SIZE
+                        player.x = dest_door.x
+                    elseif dest_door.player_spawn_pos == "below" then
+                        player.y = dest_door.y + GRID_SIZE
+                        player.x = dest_door.x
+                    end
                 end
             end
         else
@@ -144,31 +151,4 @@ function update_player()
             player.y = player.y + dy * player.speed
         end
     end
-
-    -- local door = check_door_collision()
-
-    -- if door then
-    --     dest_door = handle_door_transition(door)
-    --     if dest_door then
-    --             -- Move player to the new position
-    --         if dest_door.player_spawn_pos == "left" then
-    --             player.x = dest_door.x - GRID_SIZE
-    --         elseif dest_door.player_spawn_pos == "right" then
-    --             player.x = dest_door.x + GRID_SIZE
-    --         elseif dest_door.player_spawn_pos == "above" then
-    --             player.y = dest_door.y - GRID_SIZE
-    --             player.x = dest_door.x
-    --         elseif dest_door.player_spawn_pos == "below" then
-    --         player.y = dest_door.y + GRID_SIZE
-    --         player.x = dest_door.x
-    --         end
-    --     end
-    -- else
-    --     -- If there are no collisions, move the player normally
-    --     player.x = player.x + dx * player.speed
-    --     player.y = player.y + dy * player.speed
-    -- end
-
-    -- print player position
-    -- debug[0] = "player.x: " .. player.x .. ", player.y: " .. player.y
 end

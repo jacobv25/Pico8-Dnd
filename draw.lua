@@ -59,18 +59,25 @@ function draw_proc_gen_map(heightmap)
 
     for y=1, proc_gen_map_height do
         for x=1, proc_gen_map_width do
-            local value = heightmap[x][y]
 
-            local tile_id
-            if value <= 2 then
-                tile_id = WATER_SPRITE  -- water sprite
-            elseif value < 6 then
-                tile_id = LAND_SPRITE  -- land sprite
+            if doors[6].x == x and doors[6].y == y then 
+                -- draw special door
+                spr(doors[6].spr, (x * 8 - 8) + offset_x, (y * 8 - 8) + offset_y)
             else
-                tile_id = MOUNTAIN_SPRITE  -- mountain sprite
-            end
+                --draw proc gen map
+                local value = heightmap[x][y]
 
-            spr(tile_id, (x * 8 - 8) + offset_x, (y * 8 - 8) + offset_y)
+                local tile_id
+                if value <= 2 then
+                    tile_id = WATER_SPRITE  -- water sprite
+                elseif value < 6 then
+                    tile_id = LAND_SPRITE  -- land sprite
+                else
+                    tile_id = MOUNTAIN_SPRITE  -- mountain sprite
+                end
+
+                spr(tile_id, (x * 8 - 8) + offset_x, (y * 8 - 8) + offset_y)
+            end
         end
     end
 end

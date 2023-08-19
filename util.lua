@@ -179,6 +179,7 @@ function handle_door_transition(door)
 end
 
 function load_map(mapId)
+    debug[7] = "Loading map "..mapId
     if mapId == PROC_GEN_MAP_ID then
         -- Reset player position if needed, or set to a starting position
         player.x, player.y = 64, 64  -- example: start in the middle of the procedural map
@@ -208,4 +209,11 @@ function load_map(mapId)
             debug[3] = "Invalid map ID: " .. mapId
         end
     end
+end
+
+function get_tile_under_player()
+    local tile_x = flr(player.x / 8) + 1
+    local tile_y = flr(player.y / 8) + 1
+
+    return tile_x, tile_y
 end

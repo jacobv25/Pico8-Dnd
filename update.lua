@@ -56,21 +56,21 @@ local playing_sfx = false -- a flag to check if we've started the SFX for the cu
 
 function update_dialogue()
     -- increment the timer by the frame time (assuming 30 frames per second for PICO-8)
-    timer += 1/30
+    timer += 1 / 30
 
     -- calculate how many characters should be displayed by now
     char_count = flr(char_speed * timer)
 
     -- If characters are still being typed and SFX isn't playing, play the SFX
     if char_count < #dialogues[temp_npc_name][dialogue_index] and not playing_sfx then
-        sfx(40) 
+        sfx(40)
         playing_sfx = true
     end
 
     -- If characters are done typing, stop the SFX and reset the flag
     if char_count >= #dialogues[temp_npc_name][dialogue_index] and playing_sfx then
         -- Assuming sfx -1 stops all sound effects
-        sfx(-1) 
+        sfx(-1)
         playing_sfx = false
     end
 
@@ -111,6 +111,33 @@ function update_player()
             -- If there's a collision, don't move the player and exit the function
             return
         end
+
+        -- handle any door collisions
+        local x, y = get_tile_under_player()
+        if x and y then
+            debug[4] = "Player is standing on x: " .. x
+            debug[5] = "Player is standing on y: " .. y
+        else
+            debug[4] = "Player is out of bounds"
+            debug[5] = ""
+        end
+
+        if x == 32 and y == 32 then
+            debug[6] = "doors[6]'s id = "..doors[6].id
+            dest_door = handle_door_transition(doors[6])
+            -- Move player to the new position
+            if dest_door.player_spawn_pos == "left" then
+                player.x = dest_door.x - GRID_SIZE
+            elseif dest_door.player_spawn_pos == "right" then
+                player.x = dest_door.x + GRID_SIZE
+            elseif dest_door.player_spawn_pos == "above" then
+                player.y = dest_door.y - GRID_SIZE
+                player.x = dest_door.x
+            elseif dest_door.player_spawn_pos == "below" then
+                player.y = dest_door.y + GRID_SIZE
+                player.x = dest_door.x
+            end
+        end
         -- If there are no collisions, move the player normally
         player.x = player.x + dx * player.speed
         player.y = player.y + dy * player.speed
@@ -128,9 +155,10 @@ function update_player()
                 -- handle door transition to proc gen map
                 if dest_door.id == 6 then
                     -- assume we always want to draw the player right of the door
-                    player.y = dest_door.y*8 - GRID_SIZE
-                    player.x = dest_door.x*8
-                else -- handle normal transition
+                    player.y = dest_door.y * 8 - GRID_SIZE
+                    player.x = dest_door.x * 8
+                else
+                    -- handle normal transition
                     -- Move player to the new position
                     if dest_door.player_spawn_pos == "left" then
                         player.x = dest_door.x - GRID_SIZE

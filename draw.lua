@@ -127,15 +127,22 @@ function draw_menu()
     rect(border_x, border_y, border_x + border_width, border_y + border_height, 7)
     -- border line
 
-    -- draw the menu
-    for i = 1, #menu do
+    local display_menu = menu
+
+    if item_submenu then
+        display_menu = items
+    end
+
+    for i = 1, #display_menu do
         local color = 6 -- default color
-        if i == menu_index then
-            print(">" .. menu[i], border_x + 10, border_y + 10 + (i - 1) * 10, 7) -- selected item is white
+        local index = item_submenu and item_index or menu_index
+        if i == index then
+            print(">" .. display_menu[i], border_x + 10, border_y + 10 + (i - 1) * 10, 7) -- selected item is white
         else
-            print(menu[i], border_x + 10, border_y + 10 + (i - 1) * 10, color) -- other items are lighter
+            print(display_menu[i], border_x + 10, border_y + 10 + (i - 1) * 10, color) -- other items are lighter
         end
     end
+
 end
 -- Function to draw debug information
 function draw_debug()

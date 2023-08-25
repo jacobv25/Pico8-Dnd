@@ -9,38 +9,52 @@ function _update()
             gamestate = "menu"
         end
     elseif gamestate == "menu" then
-        -- menu navigation
+        local current_index = item_submenu and item_index or menu_index
+        local current_menu = item_submenu and items or menu
+
         if btnp(2) then
-            menu_index -= 1
-            if menu_index < 1 then
-                menu_index = #menu
+            current_index -= 1
+            if current_index < 1 then
+                current_index = #current_menu
             end
         elseif btnp(3) then
-            menu_index += 1
-            if menu_index > #menu then
-                menu_index = 1
+            current_index += 1
+            if current_index > #current_menu then
+                current_index = 1
             end
+        end
+
+        if item_submenu then
+            item_index = current_index
+        else
+            menu_index = current_index
         end
 
         -- check for 'x' button press to select option
         if btnp(5) then
-            -- handle option selection
-            option_selected = menu[menu_index]
-            -- for now, just print the selected option and switch back to game state
-            printh(option_selected)
-            if option_selected == "tALK" then
-                -- check if player is near npc
-                temp_npc = check_if_near_npc()
-                if temp_npc then
-                    temp_npc_name = temp_npc.name
-                    -- if so, start dialogue
-                    stop_music()
-                    gamestate = "dialogue"
-                    dialogue_index = 1
-                end
+            if item_submenu then
+                -- handle item usage (will implement later)
+                debug[2] = "Used " .. items[item_index]
+                item_submenu = false
             else
-                play_music_for_map(active_map)
-                gamestate = "game"
+                option_selected = menu[menu_index]
+                debug[3] = option_selected
+                if option_selected == "tALK" then
+                    -- check if player is near npc
+                    temp_npc = check_if_near_npc()
+                    if temp_npc then
+                        temp_npc_name = temp_npc.name
+                        -- if so, start dialogue
+                        stop_music()
+                        gamestate = "dialogue"
+                        dialogue_index = 1
+                    end
+                elseif option_selected == "iTEM" then
+                    item_submenu = true
+                else
+                    play_music_for_map(active_map)
+                    gamestate = "game"
+                end
             end
         end
     elseif gamestate == "dialogue" then
@@ -107,16 +121,16 @@ end
 function update_player()
     local dx, dy = 0, 0
 
-    if btn(0) then 
+    if btn(0) then
         dx = -player.speed
         player.current_anim = "walk_left"
-    elseif btn(1) then 
+    elseif btn(1) then
         dx = player.speed
         player.current_anim = "walk_right"
-    elseif btn(2) then 
+    elseif btn(2) then
         dy = -player.speed
         player.current_anim = "walk_up"
-    elseif btn(3) then 
+    elseif btn(3) then
         dy = player.speed
         player.current_anim = "walk_down"
     else
@@ -125,23 +139,14 @@ function update_player()
 
     if active_map == PROC_GEN_MAP_ID then
         if check_tile_collision_for_proc_gen_map(player, dx, dy) then
-            debug[1] = "collision detected in proc gen world"
             -- If there's a collision, don't move the player and exit the function
             return
         end
 
         -- handle any door collisions
         local x, y = get_tile_under_player()
-        if x and y then
-            debug[4] = "Player is standing on x: " .. x
-            debug[5] = "Player is standing on y: " .. y
-        else
-            debug[4] = "Player is out of bounds"
-            debug[5] = ""
-        end
 
         if x == 32 and y == 32 then
-            debug[6] = "doors[6]'s id = "..doors[6].id
             dest_door = handle_door_transition(doors[6])
             -- Move player to the new position
             if dest_door.player_spawn_pos == "left" then

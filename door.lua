@@ -44,7 +44,7 @@ doors = {
         destination_door_id = 1,
         player_spawn_pos = "below"
     }),
-    create_door({ -- NORTH ELEVATOR DOOR map 2
+    create_door({ -- map 2 to map 3
         id = 3,
         x = 40,
         y = 8,
@@ -52,14 +52,14 @@ doors = {
         destination_door_id = 4,
         player_spawn_pos = "below"
     }),
-    create_door({ -- NORTH ELAVATOR DOOR map 3
+    create_door({ -- map 3 to map 2
         id = 4,
         x = 64,
         y = 112,
         mapId = 3,
         destination_door_id = 3,
     }),
-    create_door({ -- Basement to Dungeon
+    create_door({ -- map 3 to Dungeon
         id = 5,
         x = 64,
         y = 64,
@@ -67,13 +67,29 @@ doors = {
         destination_door_id = 6,
         player_spawn_pos = "below"
     }), 
-    create_door({ -- Dungeon to Basement
+    create_door({ -- dungeon to map 3
         id = 6, -- do not change please or everything will break
         x = 32, -- PROC GEN DOOR
         y = 32, -- PROC GEN DOOR
         mapId = 100,
         destination_door_id = 5,
         player_spawn_pos = "below"
-    })
+    }),
+    create_door({ -- map 2 to outside
+        id = 7,
+        x = 56,
+        y = 104,
+        mapId = 2,
+        destination_door_id = 8,
+        player_spawn_pos = "above"
+    }),
+    create_door({ -- outside to map 2
+        id = 8,
+        x = 72,
+        y = 16,
+        mapId = 4,
+        destination_door_id = 7,
+        player_spawn_pos = "below"
+    }),
 }
 

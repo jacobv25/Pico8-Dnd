@@ -29,6 +29,7 @@ function create_door(overrides)
 end
 
 doors = {
+    
     create_door({ -- rowans front door map 1
         id = 1,
         x = 64,
@@ -44,6 +45,7 @@ doors = {
         destination_door_id = 1,
         player_spawn_pos = "below"
     }),
+    
     create_door({ -- map 2 to map 3
         id = 3,
         x = 40,
@@ -59,6 +61,7 @@ doors = {
         mapId = 3,
         destination_door_id = 3,
     }),
+    
     create_door({ -- map 3 to Dungeon
         id = 5,
         x = 64,
@@ -75,6 +78,7 @@ doors = {
         destination_door_id = 5,
         player_spawn_pos = "below"
     }),
+    
     create_door({ -- map 2 to outside
         id = 7,
         x = 56,
@@ -90,6 +94,44 @@ doors = {
         mapId = 4,
         destination_door_id = 7,
         player_spawn_pos = "below"
+    }),
+
+    create_door({ -- outside to mountainside
+        id = 9,
+        spr = 84, -- sand
+        x = 0,
+        y = 80,
+        mapId = 4,
+        destination_door_id = 10,
+        player_spawn_pos = "right"
+    }),
+    create_door({ -- mountainside to outside
+        id = 10,
+        spr = 84, -- sand
+        x = 120,
+        y = 80,
+        mapId = 5,
+        destination_door_id = 9,
+        player_spawn_pos = "left"
+    }),
+    
+    create_door({ -- mountainside to Megito Gate
+        id = 11,
+        spr = 84, -- sand
+        x = 8,
+        y = 72,
+        mapId = 5,
+        destination_door_id = 12,
+        player_spawn_pos = "right"
+    }),
+    create_door({ -- Megito Gate to Mountain Side
+        id = 12,
+        spr = 84, -- sand
+        x = 120,
+        y = 72,
+        mapId = 6,
+        destination_door_id = 11,
+        player_spawn_pos = "left"
     }),
 }
 

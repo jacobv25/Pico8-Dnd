@@ -92,5 +92,21 @@ dialogues = {
         "It's very dark.\n" ..
         "and there are\n" ..
         "many bats!",
-    }
+    },
+    ["trader"] = {
+
+    },
+    ["gate-guard"] = {
+        "ho!",
+
+        "The gates to megito\n" ..
+        "are closed.\n",
+
+        "Only citizens of\n" ..
+        "megito shall pass.\n",
+
+        "unless you have.\n" ..
+        "a form of i.d.,\n" ..
+        "begone!",
+    },
 }

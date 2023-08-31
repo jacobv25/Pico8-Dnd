@@ -158,7 +158,6 @@ function handle_door_transition(door)
     -- Find the destination door
     local dest_door = nil
     for i = 1, #doors do
-        debug[3] = "dest door id = "..door.destination_door_id
         if doors[i].id == door.destination_door_id then
             dest_door = doors[i]
             break
@@ -179,7 +178,6 @@ function handle_door_transition(door)
 end
 
 function load_map(mapId)
-    debug[7] = "Loading map "..mapId
     if mapId == PROC_GEN_MAP_ID then
         -- Reset player position if needed, or set to a starting position
         player.x, player.y = 64, 64  -- example: start in the middle of the procedural map

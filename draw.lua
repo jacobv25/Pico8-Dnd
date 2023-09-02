@@ -1,14 +1,18 @@
 function _draw()
     cls()
     if active_map == PROC_GEN_MAP_ID then
+        beforedraw()
+
         draw_proc_gen_map(heightmap)
-        -- draw_doors()
+        -- draw the player
         local frame = player.animations[player.current_anim].frames[player.current_frame]
         spr(frame, 64, 64)
+
+        afterdraw()
+
     else
         draw_map()
         draw_doors()
-        -- draw_player()
         draw_animation(player)
         draw_npcs()
     end
@@ -22,6 +26,34 @@ function _draw()
         draw_dialogue(temp_npc_name)
     end
 end
+
+function beforedraw()
+    myx = 64
+    myy = 64
+    -- myr = flr(32+sin(time()/8)*32)
+    myr = 8
+    clip(myx-myr,myx-myr,myr*2+1,myr*2+1)
+
+end
+
+function afterdraw()
+    palt(0,false)
+
+    local py=myy-myr
+    for px=myx-myr, myx+myr do
+        local cval=px -(myx-myr)
+        cval=cval/(myr*2)
+        cval=cval*2-1
+        cval=1-sqrt(1-cval*cval)
+        local ph=cval*myr+0.1
+        line(px,py,px,py+ph,0)
+        line(px,py+myr*2-ph,px,py+myr*2,0)
+    end
+
+    palt()
+end
+
+
 
 -- draw the current frame
 function draw_animation(anim_obj)
@@ -53,38 +85,41 @@ function draw_player()
     spr(player.spr, player.x, player.y)
 end
 
-
 function draw_map()
     map(current_room_x, current_room_y)
 end
 
+local screen_center_x = 64
+local screen_center_y = 64
+local offset_x = 0
+local offset_y = 0
+
 function draw_proc_gen_map(heightmap)
-    local screen_center_x = 64
-    local screen_center_y = 64
+    screen_center_x = 64
+    screen_center_y = 64
 
-    local offset_x = screen_center_x - player.x
-    local offset_y = screen_center_y - player.y
+    offset_x = screen_center_x - player.x
+    offset_y = screen_center_y - player.y
 
-    for y=1, proc_gen_map_height do
-        for x=1, proc_gen_map_width do
-
-            if doors[6].x == x and doors[6].y == y then 
+    for y = 1, proc_gen_map_height do
+        for x = 1, proc_gen_map_width do
+            if doors[6].x == x and doors[6].y == y then
                 -- draw special door
-                spr(doors[6].spr, (x * 8 - 8) + offset_x, (y * 8 - 8) + offset_y)
+                spr(doors[6].spr, x * 8 - 8 + offset_x, y * 8 - 8 + offset_y)
             else
                 --draw proc gen map
                 local value = heightmap[x][y]
 
                 local tile_id
                 if value <= 2 then
-                    tile_id = WATER_SPRITE  -- water sprite
+                    tile_id = WATER_SPRITE -- water sprite
                 elseif value < 6 then
-                    tile_id = LAND_SPRITE  -- land sprite
+                    tile_id = LAND_SPRITE -- land sprite
                 else
-                    tile_id = MOUNTAIN_SPRITE  -- mountain sprite
+                    tile_id = MOUNTAIN_SPRITE -- mountain sprite
                 end
 
-                spr(tile_id, (x * 8 - 8) + offset_x, (y * 8 - 8) + offset_y)
+                spr(tile_id, x * 8 - 8 + offset_x, y * 8 - 8 + offset_y)
             end
         end
     end
@@ -112,7 +147,6 @@ function draw_dialogue(npc_name)
     print(display_text, border_x + 10, border_y + 10, 7)
     -- dialogue text is white
 end
-
 
 function draw_menu()
     -- draw a border around the menu
@@ -142,7 +176,6 @@ function draw_menu()
             print(display_menu[i], border_x + 10, border_y + 10 + (i - 1) * 10, color) -- other items are lighter
         end
     end
-
 end
 -- Function to draw debug information
 function draw_debug()

@@ -29,7 +29,8 @@ player = {
     },
     current_anim = "idle",
     current_frame = 1,
-    timer = 0
+    timer = 0,
+    r = 32
 }
 
 base_npc = {
@@ -138,7 +139,7 @@ maps = {
     }
     -- ... other maps ...
 }
-active_map = maps[5].id -- Start the game in the first map
+active_map = maps[3].id -- Start the game in the first map
 current_room_x = 0
 current_room_y = 0
 curr_map = 0

@@ -9,7 +9,6 @@ function _draw()
         spr(frame, 64, 64)
 
         afterdraw()
-
     else
         draw_map()
         draw_doors()
@@ -28,10 +27,14 @@ function _draw()
 end
 
 function beforedraw()
-    myx = 64
-    myy = 64
+    myx = 64+3
+    myy = 64+3
     -- myr = flr(32+sin(time()/8)*32)
-    myr = 8
+    if torchActive then
+        myr = 32
+    else
+        myr = 10
+    end
     clip(myx-myr,myx-myr,myr*2+1,myr*2+1)
 
 end
@@ -53,7 +56,20 @@ function afterdraw()
     palt()
 end
 
+function draw_composed_sprite(sprites, x, y)
+    local sprite_width, sprite_height = 8, 8
+    local composed_width = #sprites[1]
+    -- number of columns in the sprite table
+    local composed_height = #sprites
+    -- number of rows in the sprite table
 
+    for j = 1, composed_height do
+        for i = 1, composed_width do
+            local sprite_num = sprites[j][i]
+            spr(sprite_num, x + (i - 1) * sprite_width, y + (j - 1) * sprite_height)
+        end
+    end
+end
 
 -- draw the current frame
 function draw_animation(anim_obj)
@@ -80,10 +96,7 @@ function draw_doors()
     end
 end
 
-function draw_player()
-    -- Draw player
-    spr(player.spr, player.x, player.y)
-end
+
 
 function draw_map()
     map(current_room_x, current_room_y)
@@ -106,6 +119,9 @@ function draw_proc_gen_map(heightmap)
             if doors[6].x == x and doors[6].y == y then
                 -- draw special door
                 spr(doors[6].spr, x * 8 - 8 + offset_x, y * 8 - 8 + offset_y)
+            elseif doors[13].x == x and doors[13].y == y then
+                -- draw special door
+                spr(doors[13].spr, x * 8 - 8 + offset_x, y * 8 - 8 + offset_y)
             else
                 --draw proc gen map
                 local value = heightmap[x][y]
@@ -132,6 +148,13 @@ function draw_dialogue(npc_name)
     local border_width = 90
     local border_height = 60
 
+    if npc_name == "eli" then
+        border_x = 5
+        border_y = 5
+        border_width = 115
+        border_height = 90
+    end
+
     -- filled rect for background
     rectfill(border_x, border_y, border_x + border_width, border_y + border_height, 0)
     -- background is black
@@ -146,6 +169,11 @@ function draw_dialogue(npc_name)
     -- draw the dialogue
     print(display_text, border_x + 10, border_y + 10, 7)
     -- dialogue text is white
+
+    if npc_name == "eli" then
+        draw_composed_sprite(eli_face, 48, 90)
+    end
+
 end
 
 function draw_menu()

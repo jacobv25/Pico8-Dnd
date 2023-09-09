@@ -109,4 +109,7 @@ dialogues = {
         "a form of i.d.,\n" ..
         "begone!",
     },
+    ["eli"] = {
+        "hello i am eli!"
+    },
 }

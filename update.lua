@@ -1,8 +1,17 @@
 function _update()
-    debug[0] = "active map: " .. active_map
+    -- debug[0] = "active map: " .. active_map
     if gamestate == "game" then
         update_player()
         update_animation(player)
+        if torch_activation_time and torchActive then
+            debug[1] = "Torch time: " .. (time() - torch_activation_time)
+        end
+            -- If torch is active and the duration is exceeded, deactivate it
+        if torchActive and ((time() - torch_activation_time) > torch_duration) then
+            debug[1] = "Torch deactivated"
+            -- print the torch time
+            torchActive = false
+        end
         -- game logic goes here
         -- check for 'x' button press to open menu
         if btnp(5) then
@@ -35,6 +44,15 @@ function _update()
             if item_submenu then
                 -- handle item usage (will implement later)
                 debug[2] = "Used " .. items[item_index]
+
+                if items[item_index] == "Torch" then
+                    --start torch timer
+                    --set torchActive to true
+                    torchActive = true
+                    gamestate = "game"
+                    torch_activation_time = time()
+                end
+
                 item_submenu = false
             else
                 option_selected = menu[menu_index]
@@ -60,6 +78,8 @@ function _update()
     elseif gamestate == "dialogue" then
         -- dialogue navigation
         update_dialogue()
+    elseif gamestate == "final" then
+        -- battle logic goes here
     end
 end
 
@@ -114,92 +134,6 @@ function update_dialogue()
                 play_music_for_map(active_map)
                 gamestate = "game" -- end dialogue after the last message
             end
-        end
-    end
-end
-
-function update_player()
-    local dx, dy = 0, 0
-
-    if btn(0) then
-        dx = -player.speed
-        player.current_anim = "walk_left"
-    elseif btn(1) then
-        dx = player.speed
-        player.current_anim = "walk_right"
-    elseif btn(2) then
-        dy = -player.speed
-        player.current_anim = "walk_up"
-    elseif btn(3) then
-        dy = player.speed
-        player.current_anim = "walk_down"
-    else
-        player.current_anim = "idle"
-    end
-
-    if active_map == PROC_GEN_MAP_ID then
-        if check_tile_collision_for_proc_gen_map(player, dx, dy) then
-            -- If there's a collision, don't move the player and exit the function
-            return
-        end
-
-        -- handle any door collisions
-        local x, y = get_tile_under_player()
-
-        if x == 32 and y == 32 then
-            dest_door = handle_door_transition(doors[6])
-            -- Move player to the new position
-            if dest_door.player_spawn_pos == "left" then
-                player.x = dest_door.x - GRID_SIZE
-            elseif dest_door.player_spawn_pos == "right" then
-                player.x = dest_door.x + GRID_SIZE
-            elseif dest_door.player_spawn_pos == "above" then
-                player.y = dest_door.y - GRID_SIZE
-                player.x = dest_door.x
-            elseif dest_door.player_spawn_pos == "below" then
-                player.y = dest_door.y + GRID_SIZE
-                player.x = dest_door.x
-            end
-        end
-        -- If there are no collisions, move the player normally
-        player.x = player.x + dx * player.speed
-        player.y = player.y + dy * player.speed
-    else
-        if check_tile_collision(player, dx, dy) then
-            -- If there's a collision, don't move the player and exit the function
-            return
-        end
-
-        local door = check_door_collision()
-
-        if door then
-            dest_door = handle_door_transition(door)
-            if dest_door then
-                -- handle door transition to proc gen map
-                if dest_door.id == 6 then
-                    -- assume we always want to draw the player right of the door
-                    player.y = dest_door.y * 8 - GRID_SIZE
-                    player.x = dest_door.x * 8
-                else
-                    -- handle normal transition
-                    -- Move player to the new position
-                    if dest_door.player_spawn_pos == "left" then
-                        player.x = dest_door.x - GRID_SIZE
-                    elseif dest_door.player_spawn_pos == "right" then
-                        player.x = dest_door.x + GRID_SIZE
-                    elseif dest_door.player_spawn_pos == "above" then
-                        player.y = dest_door.y - GRID_SIZE
-                        player.x = dest_door.x
-                    elseif dest_door.player_spawn_pos == "below" then
-                        player.y = dest_door.y + GRID_SIZE
-                        player.x = dest_door.x
-                    end
-                end
-            end
-        else
-            -- If there are no collisions, move the player normally
-            player.x = player.x + dx * player.speed
-            player.y = player.y + dy * player.speed
         end
     end
 end

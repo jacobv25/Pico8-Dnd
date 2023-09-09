@@ -72,8 +72,8 @@ doors = {
     }), 
     create_door({ -- dungeon to map 3
         id = 6, -- do not change please or everything will break
-        x = 32, -- PROC GEN DOOR
-        y = 32, -- PROC GEN DOOR
+        x = 32,
+        y = 32,
         mapId = 100,
         destination_door_id = 5,
         player_spawn_pos = "below"
@@ -132,6 +132,23 @@ doors = {
         mapId = 6,
         destination_door_id = 11,
         player_spawn_pos = "left"
+    }),
+
+    create_door({ -- Dungeon to Final Room
+        id = 13,
+        x = 32 + 2,
+        y = 32 + 2,
+        mapId = 100,
+        destination_door_id = 14,
+        player_spawn_pos = "below"
+    }),
+    create_door({ -- Final Room to Dungeon
+        id = 14,
+        x = 64,
+        y = 64,
+        mapId = 7,
+        destination_door_id = 13,
+        player_spawn_pos = "below"
     }),
 }
 

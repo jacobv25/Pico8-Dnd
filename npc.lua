@@ -30,8 +30,18 @@ npcs = {
     create_npc({ name = "fintan", x = 40, y = 50, spr = 40, curr_map = 2 }),
     create_npc({ name = "saksham", x = 80, y = 80, spr = 56, curr_map = 2 }),
     create_npc({ name = "robie", x = 72, y = 72, spr = 8, curr_map = 3 }),
-    create_npc({ name = "trader", x = 64, y = 32, spr = 42, curr_map = 6 }),
-    create_npc({ name = "gate-guard", x = 40, y = 48, spr = 26, curr_map = 6 }),
+    create_npc({ name = "trader",
+                        x = 64,
+                        y = 32,
+                        spr = 42,
+                        curr_map = 6,
+                        item = "Torch",
+                        hasGivenItem = false }),
+    create_npc({ name = "gate-guard",
+                        x = 40, 
+                        y = 48, 
+                        spr = 26, 
+                        curr_map = 6,}),
     create_npc({ name = "eli", x = 64, y = 48, spr = 10, curr_map = 7 })
 }
 

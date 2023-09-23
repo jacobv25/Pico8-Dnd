@@ -94,7 +94,10 @@ dialogues = {
         "many bats!",
     },
     ["trader"] = {
+        "Greetings, traveler.\n" ..
+        "I am a trader.\n",
 
+        "Here, have a torch.\n"
     },
     ["gate-guard"] = {
         "ho!",

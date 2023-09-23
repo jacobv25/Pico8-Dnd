@@ -89,7 +89,7 @@ maps = {
     }
     -- ... other maps ...
 }
-active_map = maps[3].id -- Start the game in the first map
+active_map = maps[6].id -- Start the game in the first map
 current_room_x = 0
 current_room_y = 0
 curr_map = 0

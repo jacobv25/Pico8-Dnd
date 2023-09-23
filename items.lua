@@ -1,4 +1,4 @@
-items = {"Torch", "Ether", "Elixir"}  -- sample items
+items = {}  -- sample items
 item_index = 1
 item_submenu = false
 

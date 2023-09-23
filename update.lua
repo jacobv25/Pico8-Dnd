@@ -43,11 +43,15 @@ function _update()
         if btnp(5) then
             if item_submenu then
                 -- handle item usage (will implement later)
+                if items[item_index] == nil then
+                    gamestate = "game"
+                    item_submenu = false
+                    return
+                end
                 debug[2] = "Used " .. items[item_index]
 
                 if items[item_index] == "Torch" then
-                    --start torch timer
-                    --set torchActive to true
+                    del(items, "Torch")
                     torchActive = true
                     gamestate = "game"
                     torch_activation_time = time()
@@ -57,16 +61,23 @@ function _update()
             else
                 option_selected = menu[menu_index]
                 debug[3] = option_selected
+                -- TALK MENU ITEM SELECTED
                 if option_selected == "tALK" then
                     -- check if player is near npc
                     temp_npc = check_if_near_npc()
                     if temp_npc then
+                        
                         temp_npc_name = temp_npc.name
+                        
+                        if temp_npc.item then
+                            
+                        end
                         -- if so, start dialogue
                         stop_music()
                         gamestate = "dialogue"
                         dialogue_index = 1
                     end
+                -- ITEM MENU ITEM SELECTED
                 elseif option_selected == "iTEM" then
                     item_submenu = true
                 else
@@ -107,6 +118,7 @@ function update_dialogue()
     -- calculate how many characters should be displayed by now
     char_count = flr(char_speed * timer)
 
+    debug[1] = "temp_npc_name: " .. temp_npc_name
     -- If characters are still being typed and SFX isn't playing, play the SFX
     if char_count < #dialogues[temp_npc_name][dialogue_index] and not playing_sfx then
         sfx(40)
@@ -130,8 +142,21 @@ function update_dialogue()
             timer = 0 -- reset the timer
             playing_sfx = false -- reset the SFX flag
             if dialogue_index > #dialogues[temp_npc_name] then
+                -- END OF DIALOGUE
                 dialogue_index = 1
                 play_music_for_map(active_map)
+                
+                -- iterate through all the npcs and get the npc whose name matches temp_npc_name
+                for i = 1, #npcs do
+                    if npcs[i].name == temp_npc_name then
+                        -- if the npc has an item, add it to the player's inventory
+                        if npcs[i].item then
+                            add(items, npcs[i].item)
+                        end
+                        break
+                    end
+                end
+
                 gamestate = "game" -- end dialogue after the last message
             end
         end

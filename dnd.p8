@@ -52,7 +52,7 @@ maps = {
         name = "north_basement",
         cell_x = 33,
         cell_y = 0,
-        non_walkable = { 66, 67, 82, 83, 102, 103, 118, 119 }
+        non_walkable = { 0, 66, 67, 82, 83, 102, 103, 118, 119 }
     },
     {
         id = 4,
@@ -86,12 +86,12 @@ maps = {
         id = 7,
         name = "final-room",
         cell_x = 0,
-        cell_y = 17,
+        cell_y = 16,
         non_walkable = { }
     }
     -- ... other maps ...
 }
-active_map = maps[6].id -- Start the game in the first map
+active_map = maps[3].id -- Start the game in the first map
 current_room_x = 0
 current_room_y = 0
 curr_map = 0

@@ -145,10 +145,10 @@ doors = {
     create_door({ -- Final Room to Dungeon
         id = 14,
         x = 64,
-        y = 64,
+        y = 120,
         mapId = 7,
         destination_door_id = 13,
-        player_spawn_pos = "below"
+        player_spawn_pos = "above"
     }),
 }
 

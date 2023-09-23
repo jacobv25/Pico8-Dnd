@@ -75,7 +75,9 @@ maps = {
         name = "megito_gate",
         cell_x = 81,
         cell_y = 0,
-        non_walkable = { 64, 80, 81,
+        non_walkable = { 85, -- water 
+                        209, 194, -- gate and wall 
+                        64, 80, 81,
                         193, 189, 
                         195, 211,
                         212, 228, 213, 214  }

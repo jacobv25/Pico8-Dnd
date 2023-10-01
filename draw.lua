@@ -23,6 +23,16 @@ function _draw()
     elseif gamestate == "dialogue" then
         -- draw the dialogue
         draw_dialogue(temp_npc_name)
+    elseif gamestate == "final" then 
+        draw_player()
+        if laserE.on then
+            debug[1] = "laserE.on = true"
+            for p in all(laserE.parts) do
+                if p.wait == nil then
+                    p.draw(p)
+                end
+            end
+        end
     end
 end
 

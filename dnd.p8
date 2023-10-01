@@ -111,7 +111,15 @@ gamestate = "game" -- Start the game in the game state
 pxl_mvmt_on = false
 
 
+laserE = {
+    parts = {},
+    slow = false,
+    t = 0,
+    on = false
+}
+#include laser.lua
 
+#include actions.lua
 #include update.lua
 #include draw.lua
 #include perlin.lua

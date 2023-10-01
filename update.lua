@@ -4,10 +4,10 @@ function _update()
         update_player()
         update_animation(player)
         if torch_activation_time and torchActive then
-            debug[1] = "Torch time: " .. (time() - torch_activation_time)
+            debug[1] = "Torch time: " .. time() - torch_activation_time
         end
-            -- If torch is active and the duration is exceeded, deactivate it
-        if torchActive and ((time() - torch_activation_time) > torch_duration) then
+        -- If torch is active and the duration is exceeded, deactivate it
+        if torchActive and time() - torch_activation_time > torch_duration then
             debug[1] = "Torch deactivated"
             -- print the torch time
             torchActive = false
@@ -60,24 +60,22 @@ function _update()
                 item_submenu = false
             else
                 option_selected = menu[menu_index]
-                debug[3] = option_selected
+                -- debug[3] = option_selected
                 -- TALK MENU ITEM SELECTED
                 if option_selected == "tALK" then
                     -- check if player is near npc
                     temp_npc = check_if_near_npc()
                     if temp_npc then
-                        
                         temp_npc_name = temp_npc.name
-                        
+
                         if temp_npc.item then
-                            
                         end
                         -- if so, start dialogue
                         stop_music()
                         gamestate = "dialogue"
                         dialogue_index = 1
                     end
-                -- ITEM MENU ITEM SELECTED
+                    -- ITEM MENU ITEM SELECTED
                 elseif option_selected == "iTEM" then
                     item_submenu = true
                 else
@@ -90,7 +88,25 @@ function _update()
         -- dialogue navigation
         update_dialogue()
     elseif gamestate == "final" then
-        -- battle logic goes here
+        -- ****** FINAL CUTSENE LOGIC ******
+        -- MOVE PLAYER
+        -- update the interpolation factor, ensuring it doesn't exceed 1
+        player.t = min(player.t + player.speed / 100, 1)
+
+        -- update the player's position using lerp
+        player.x = lerp(player.x, player.target_x, player.t)
+        player.y = lerp(player.y, player.target_y, player.t)
+
+        -- player has reached target
+        if player.x == player.target_x and player.y == player.target_y then
+            -- do something
+            laserE.on = true
+            laserbeam(0, 120, 48, 80, 10, 30, 30)
+            laserE.t += 1
+            for p in all(laserE.parts) do
+                dolaserbeam_part(p)
+            end
+        end
     end
 end
 
@@ -118,7 +134,7 @@ function update_dialogue()
     -- calculate how many characters should be displayed by now
     char_count = flr(char_speed * timer)
 
-    debug[1] = "temp_npc_name: " .. temp_npc_name
+    -- debug[1] = "temp_npc_name: " .. temp_npc_name
     -- If characters are still being typed and SFX isn't playing, play the SFX
     if char_count < #dialogues[temp_npc_name][dialogue_index] and not playing_sfx then
         sfx(40)
@@ -145,7 +161,7 @@ function update_dialogue()
                 -- END OF DIALOGUE
                 dialogue_index = 1
                 play_music_for_map(active_map)
-                
+                --CHECK IF NPC IS SPECIAL
                 -- iterate through all the npcs and get the npc whose name matches temp_npc_name
                 for i = 1, #npcs do
                     if npcs[i].name == temp_npc_name then
@@ -157,7 +173,13 @@ function update_dialogue()
                     end
                 end
 
-                gamestate = "game" -- end dialogue after the last message
+                -- if temp_npc_name equals "eli" then switch to "final" gamestate
+                if temp_npc_name == "eli" then
+                    -- debug[2] = "in final state"
+                    gamestate = "final"
+                else
+                    gamestate = "game"
+                end
             end
         end
     end

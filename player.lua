@@ -18,7 +18,11 @@ player = {
     current_anim = "idle",
     current_frame = 1,
     timer = 0,
-    r = 32
+    r = 32,
+    --lerp
+    target_x = 100,  -- destination x-coordinate
+    target_y = 100,  -- destination y-coordinate
+    t = 0  -- interpolation factor, initialize to 0
 }
 
 

@@ -57,7 +57,7 @@ dialogues = {
 
         "There's a scary\n" ..
         "sound coming from\n" ..
-        "the forest.",
+        "the North Ruins.",
 
         "I hope you can\n" ..
         "find out what's\n" ..
@@ -66,6 +66,15 @@ dialogues = {
         "Good luck! My\n" ..
         "friends and I are\n" ..
         "counting on you.",
+
+        "A year ago, heroes\n" ..
+        "came to our\n" ..
+        "village.",
+        "They left and\n" ..
+        "never returned.\n",
+        "I'm glad you're\n" ..
+        "staying to help.\n" ..
+        "Thank you!",
     },
     ["saksham2"] = {
         "You're still here!",

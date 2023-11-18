@@ -99,7 +99,7 @@ function check_tile_collision(player, dx, dy)
         local tile_x = flr((corner.x + map_offset_x) / 8) -- Adjusted to account for map offset
         local tile_y = flr((corner.y + map_offset_y) / 8) -- Adjusted to account for map offset
         local tile_number = mget(tile_x, tile_y)
-        debug[9] = "Tile number: " .. tile_number
+        -- debug[9] = "Tsile number: " .. tile_number
         for j, non_walkable_tile in ipairs(maps[active_map].non_walkable) do
             if tile_number == non_walkable_tile then
                 return true
